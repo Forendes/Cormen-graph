@@ -1,4 +1,3 @@
-extern crate priority_queue;
 use priority_queue::PriorityQueue;
 #[derive(Debug, PartialEq, Hash, Eq)]
 pub struct Graph {
@@ -45,110 +44,55 @@ impl Graph {
             // if node we connect to has no edges, then need to create new edge or else just push new edge to
             // the vec of existing edges
 
+            // receiver have edges
+            if let Some(edge) = self.vertices[sender.0].edges.as_mut() {
+                edge.push(GraphEdge {
+                    value,
+                    edges: (receiver, sender.0),
+                });
             // receiver have no edges
-            if self
-                .vertices
-                .get_mut(sender.0)
-                .unwrap()
-                .edges
-                .as_mut()
-                .is_none()
-            {
+            } else {
                 self.vertices.get_mut(sender.0).unwrap().edges = Some(vec![GraphEdge {
                     value,
                     edges: (receiver, sender.0),
                 }])
-            // receiver have edges
-            } else {
-                self.vertices
-                    .get_mut(sender.0)
-                    .unwrap()
-                    .edges
-                    .as_mut()
-                    .unwrap()
-                    .push(GraphEdge {
-                        value,
-                        edges: (receiver, sender.0),
-                    });
             }
-            // same thing for node from whom connection is going
-
+            // sender have edges
+            if let Some(edge) = self.vertices[receiver].edges.as_mut() {
+                edge.push(GraphEdge {
+                    value,
+                    edges: (receiver, sender.0),
+                });
             // sender have no edges
-            if self
-                .vertices
-                .get_mut(receiver)
-                .unwrap()
-                .edges
-                .as_mut()
-                .is_none()
-            {
+            } else {
                 self.vertices.get_mut(receiver).unwrap().edges = Some(vec![GraphEdge {
                     value,
                     edges: (receiver, sender.0),
                 }])
-            // sender have edges
-            } else {
-                self.vertices
-                    .get_mut(receiver)
-                    .unwrap()
-                    .edges
-                    .as_mut()
-                    .unwrap()
-                    .push(GraphEdge {
-                        value,
-                        edges: (receiver, sender.0),
-                    });
             }
         // true => connection going from receiver to sender
         } else {
-            if self
-                .vertices
-                .get_mut(sender.0)
-                .unwrap()
-                .edges
-                .as_mut()
-                .is_none()
-            {
+            if let Some(edge) = self.vertices[sender.0].edges.as_mut() {
+                edge.push(GraphEdge {
+                    value,
+                    edges: (sender.0, receiver),
+                });
+            } else {
                 self.vertices.get_mut(sender.0).unwrap().edges = Some(vec![GraphEdge {
                     value,
                     edges: (sender.0, receiver),
                 }])
-            } else {
-                self.vertices
-                    .get_mut(sender.0)
-                    .unwrap()
-                    .edges
-                    .as_mut()
-                    .unwrap()
-                    .push(GraphEdge {
-                        value,
-                        edges: (sender.0, receiver),
-                    });
             }
-            // node from connection is going
-            if self
-                .vertices
-                .get_mut(receiver)
-                .unwrap()
-                .edges
-                .as_mut()
-                .is_none()
-            {
+            if let Some(edge) = self.vertices[receiver].edges.as_mut() {
+                edge.push(GraphEdge {
+                    value,
+                    edges: (sender.0, receiver),
+                });
+            } else {
                 self.vertices.get_mut(receiver).unwrap().edges = Some(vec![GraphEdge {
                     value,
                     edges: (sender.0, receiver),
                 }])
-            } else {
-                self.vertices
-                    .get_mut(receiver)
-                    .unwrap()
-                    .edges
-                    .as_mut()
-                    .unwrap()
-                    .push(GraphEdge {
-                        value,
-                        edges: (sender.0, receiver),
-                    });
             }
         }
     }
