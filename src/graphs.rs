@@ -41,59 +41,12 @@ impl Graph {
         // false => from sender -> to receiver
         // true => from receiver -> to sender
         if !sender.1 {
-            // if node we connect to has no edges, then need to create new edge or else just push new edge to
-            // the vec of existing edges
-
-            // receiver have edges
-            if let Some(edge) = self.vertices[sender.0].edges.as_mut() {
-                edge.push(GraphEdge {
-                    value,
-                    edges: (receiver, sender.0),
-                });
-            // receiver have no edges
-            } else {
-                self.vertices.get_mut(sender.0).unwrap().edges = Some(vec![GraphEdge {
-                    value,
-                    edges: (receiver, sender.0),
-                }])
-            }
-            // sender have edges
-            if let Some(edge) = self.vertices[receiver].edges.as_mut() {
-                edge.push(GraphEdge {
-                    value,
-                    edges: (receiver, sender.0),
-                });
-            // sender have no edges
-            } else {
-                self.vertices.get_mut(receiver).unwrap().edges = Some(vec![GraphEdge {
-                    value,
-                    edges: (receiver, sender.0),
-                }])
-            }
+            self.pusher(value, receiver, sender.0, sender.0);
+            self.pusher(value, receiver, sender.0, receiver);
         // true => connection going from receiver to sender
         } else {
-            if let Some(edge) = self.vertices[sender.0].edges.as_mut() {
-                edge.push(GraphEdge {
-                    value,
-                    edges: (sender.0, receiver),
-                });
-            } else {
-                self.vertices.get_mut(sender.0).unwrap().edges = Some(vec![GraphEdge {
-                    value,
-                    edges: (sender.0, receiver),
-                }])
-            }
-            if let Some(edge) = self.vertices[receiver].edges.as_mut() {
-                edge.push(GraphEdge {
-                    value,
-                    edges: (sender.0, receiver),
-                });
-            } else {
-                self.vertices.get_mut(receiver).unwrap().edges = Some(vec![GraphEdge {
-                    value,
-                    edges: (sender.0, receiver),
-                }])
-            }
+            self.pusher(value, sender.0, receiver, sender.0);
+            self.pusher(value, sender.0, receiver, receiver);
         }
     }
 
@@ -158,5 +111,24 @@ impl Graph {
             }
         }
         distance
+    }
+
+    fn pusher(&mut self, value: usize, sender: usize, receiver: usize, index: usize) {
+        // if node we connect to has no edges, then need to create new edge or else just push new edge to
+        // the vec of existing edges
+
+        // receiver have edges
+        if let Some(edge) = self.vertices[index].edges.as_mut() {
+            edge.push(GraphEdge {
+                value,
+                edges: (sender, receiver),
+            });
+        // no edges
+        } else {
+            self.vertices.get_mut(index).unwrap().edges = Some(vec![GraphEdge {
+                value,
+                edges: (sender, receiver),
+            }])
+        }
     }
 }

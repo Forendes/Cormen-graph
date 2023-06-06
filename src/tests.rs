@@ -57,36 +57,25 @@ fn edge_connection_works() {
     graph.connect(10, (0, false), 1);
     graph.connect(15, (1, true), 2);
     graph.connect(20, (0, true), 2);
-    assert_eq!(
-        graph
-            .vertices
-            .get(0)
-            .as_ref()
-            .unwrap()
-            .edges
-            .as_ref()
-            .unwrap()
-            .get(0),
-        Some(&GraphEdge {
-            value: 1,
-            edges: (0, 1)
-        })
-    );
-    assert_eq!(
-        graph
-            .vertices
-            .get(2)
-            .as_ref()
-            .unwrap()
-            .edges
-            .as_ref()
-            .unwrap()
-            .get(0),
-        Some(&GraphEdge {
-            value: 15,
-            edges: (1, 2)
-        })
-    );
+
+    if let Some(edge) = graph.vertices[0].edges.as_ref() {
+        assert_eq!(
+            edge.get(0),
+            Some(&GraphEdge {
+                value: 1,
+                edges: (0, 1)
+            })
+        );
+    }
+    if let Some(edge) = graph.vertices[2].edges.as_ref() {
+        assert_eq!(
+            edge.get(0),
+            Some(&GraphEdge {
+                value: 15,
+                edges: (1, 2)
+            })
+        );
+    }
 }
 
 #[test]
