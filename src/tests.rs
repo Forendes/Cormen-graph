@@ -23,9 +23,9 @@ fn create_large_graph() -> Graph {
     graph.connect(100, (5, true), 7);
     graph.connect(100, (6, true), 7);
     graph
-    // 1 ← 0   4 → 6
-    // ↓   ↓ ↗   ↗ ↓
-    // 3   2 → 5 → 7
+    // 1 ← 0   4 → 6        1 ← 0 = (100)          4 = (2000) → 6
+    // ↓   ↓ ↗   ↗ ↓        ↓          ↓         ↗  = (100)  (↗ ↓) = (100)
+    // 3   2 → 5 → 7        3 = (100)  2 = (100) → 5 = (1000) → 7
 }
 
 fn create_large_graph_2() -> Graph {
@@ -45,9 +45,9 @@ fn create_large_graph_2() -> Graph {
     graph.connect(10, (5, true), 7);
     graph.connect(1, (6, true), 7);
     graph
-    // 1 ← 0   4 → 6
-    // ↓   ↓ ↗   ↗ ↓
-    // 3   2 → 5 → 7
+    // 1 ← 0   4 → 6        1 ← 0 = (100)          4 = (1) → 6          6
+    // ↓   ↓ ↗   ↗ ↓        ↓          ↓         ↗  = (1)  ↗ = (100)    ↓ = (1)
+    // 3   2 → 5 → 7        3 = (100)  2 = (100) → 5 = (100) → 7 = (10) 7
 }
 
 #[test]
@@ -107,15 +107,15 @@ fn breadth_first_search_works() {
     // from node with index 0
     assert_eq!(vec![0, 1, 1, 2, 2, 2, 3, 3], distance);
     // from node with index 2
-    assert_eq!(vec![0, 0, 0, 0, 1, 1, 2, 2,], distance_2);
+    assert_eq!(vec![0, 0, 0, 0, 1, 1, 2, 2], distance_2);
 }
 
 #[test]
 fn dijkstra_works() {
     let graph = create_large_graph();
     let graph_2 = create_large_graph_2();
-    let distance = graph.dijkstra(0);
-    let distance_2 = graph_2.dijkstra(0);
-    assert_eq!(distance, [0, 100, 100, 200, 200, 1100, 1200, 1200]);
-    assert_eq!(distance_2, [0, 100, 100, 200, 101, 200, 102, 103]);
+    assert_eq!(graph.dijkstra(0), [0, 100, 100, 200, 200, 1100, 1200, 1200]);
+    assert_eq!(graph_2.dijkstra(0), [0, 100, 100, 200, 101, 200, 102, 103]);
+    assert_eq!(graph_2.dijkstra(2), [0, 0, 0, 0, 1, 100, 2, 3]);
+    assert_eq!(graph.dijkstra(1), [0, 0, 0, 100, 0, 0, 0, 0]);
 }

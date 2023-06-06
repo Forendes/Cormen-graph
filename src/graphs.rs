@@ -129,7 +129,6 @@ impl Graph {
         distance
     }
 
-    // not working if starting not from node 0 because of how directed graph implemented
     pub fn dijkstra(&self, start_node: usize) -> Vec<usize> {
         // distance for best distances each index have currently
         // queue for tracking each possible distance
@@ -140,6 +139,10 @@ impl Graph {
             for i in current.edges.iter().flat_map(|edges| edges.iter()) {
                 // check if we can get a better result with new distance
                 let new_distance = i.value + distance[i.edges.0];
+                // check if its outgoing connection
+                if i.edges.1 == current.index {
+                    continue;
+                }
                 // if no distance was calculated insert any
                 if distance[i.edges.1] == 0 {
                     distance[i.edges.1] = new_distance;
