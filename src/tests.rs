@@ -13,15 +13,16 @@ fn create_large_graph() -> Graph {
         graph.add();
         i += 1;
     }
-    graph.connect(100, (0, true), 1);
-    graph.connect(100, (0, true), 2);
-    graph.connect(100, (1, true), 3);
-    graph.connect(100, (2, true), 4);
-    graph.connect(1000, (2, true), 5);
-    graph.connect(2000, (4, true), 6);
-    graph.connect(100, (5, true), 6);
-    graph.connect(100, (5, true), 7);
-    graph.connect(100, (6, true), 7);
+
+    graph.connect(100, 0, 1, false);
+    graph.connect(100, 0, 2, false);
+    graph.connect(100, 1, 3, false);
+    graph.connect(100, 2, 4, false);
+    graph.connect(1000, 2, 5, false);
+    graph.connect(2000, 4, 6, false);
+    graph.connect(100, 5, 6, false);
+    graph.connect(100, 5, 7, false);
+    graph.connect(100, 6, 7, false);
     graph
     // 1 ← 0   4 → 6        1 ← 0 = (100)          4 = (2000) → 6
     // ↓   ↓ ↗   ↗ ↓        ↓          ↓         ↗  = (100)  (↗ ↓) = (100)
@@ -35,15 +36,15 @@ fn create_large_graph_2() -> Graph {
         graph.add();
         i += 1;
     }
-    graph.connect(100, (0, true), 1);
-    graph.connect(100, (0, true), 2);
-    graph.connect(100, (1, true), 3);
-    graph.connect(1, (2, true), 4);
-    graph.connect(100, (2, true), 5);
-    graph.connect(1, (4, true), 6);
-    graph.connect(100, (5, true), 6);
-    graph.connect(10, (5, true), 7);
-    graph.connect(1, (6, true), 7);
+    graph.connect(100, 0, 1, false);
+    graph.connect(100, 0, 2, false);
+    graph.connect(100, 1, 3, false);
+    graph.connect(1, 2, 4, false);
+    graph.connect(100, 2, 5, false);
+    graph.connect(1, 4, 6, false);
+    graph.connect(100, 5, 6, false);
+    graph.connect(10, 5, 7, false);
+    graph.connect(1, 6, 7, false);
     graph
     // 1 ← 0   4 → 6        1 ← 0 = (100)          4 = (1) → 6          6
     // ↓   ↓ ↗   ↗ ↓        ↓          ↓         ↗  = (1)  ↗ = (100)    ↓ = (1)
@@ -53,10 +54,10 @@ fn create_large_graph_2() -> Graph {
 #[test]
 fn edge_connection_works() {
     let mut graph = create_graph();
-    graph.connect(1, (0, true), 1);
-    graph.connect(10, (0, false), 1);
-    graph.connect(15, (1, true), 2);
-    graph.connect(20, (0, true), 2);
+    graph.connect(1, 0, 1, false);
+    graph.connect(10, 0, 1, true);
+    graph.connect(15, 1, 2, false);
+    graph.connect(20, 0, 2, false);
 
     if let Some(edge) = graph.vertices[0].edges.as_ref() {
         assert_eq!(

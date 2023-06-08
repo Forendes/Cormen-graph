@@ -4,10 +4,6 @@ pub struct Graph {
     pub vertices: Vec<GraphVertex>,
 }
 
-pub struct GraphNode {
-    pub neighbors: Vec<Box<(GraphVertex, u32)>>,
-}
-
 #[derive(Debug, PartialEq, Hash, Eq)]
 pub struct GraphVertex {
     pub index: usize,
@@ -18,6 +14,12 @@ pub struct GraphVertex {
 pub struct GraphEdge {
     pub value: usize,
     pub edges: (usize, usize),
+}
+
+impl Default for Graph {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Graph {
@@ -37,16 +39,16 @@ impl Graph {
         })
     }
 
-    pub fn connect(&mut self, value: usize, sender: (usize, bool), receiver: usize) {
-        // false => from sender -> to receiver
-        // true => from receiver -> to sender
-        if !sender.1 {
-            self.pusher(value, receiver, sender.0, sender.0);
-            self.pusher(value, receiver, sender.0, receiver);
-        // true => connection going from receiver to sender
+    pub fn connect(&mut self, value: usize, sender: usize, receiver: usize, invert: bool) {
+        // invert false => from sender -> to receiver
+        // inver true => from receiver -> to sender
+
+        if !invert {
+            self.pusher(value, sender, receiver, sender);
+            self.pusher(value, sender, receiver, receiver);
         } else {
-            self.pusher(value, sender.0, receiver, sender.0);
-            self.pusher(value, sender.0, receiver, receiver);
+            self.pusher(value, receiver, sender, sender);
+            self.pusher(value, receiver, sender, receiver);
         }
     }
 
