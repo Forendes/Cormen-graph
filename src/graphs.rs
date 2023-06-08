@@ -41,7 +41,7 @@ impl Graph {
 
     pub fn connect(&mut self, value: usize, sender: usize, receiver: usize, invert: bool) {
         // invert false => from sender -> to receiver
-        // inver true => from receiver -> to sender
+        // invert true => from receiver -> to sender
 
         if !invert {
             self.pusher(value, sender, receiver, sender);
